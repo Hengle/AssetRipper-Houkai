@@ -314,6 +314,9 @@ namespace AssetRipper.Core.Classes.Renderer
 			{
 				DynamicOccludee = reader.ReadByte();
 			}
+			
+			AllowHalfResolution = reader.ReadByte();
+			
 			if (HasStaticShadowCaster(reader.Version))
 			{
 				StaticShadowCaster = reader.ReadByte();
@@ -454,6 +457,9 @@ namespace AssetRipper.Core.Classes.Renderer
 			{
 				reader.AlignStream();
 			}
+
+			UseHighestMip = reader.ReadBoolean();
+			reader.AlignStream();
 		}
 
 		public override IEnumerable<PPtr<IUnityObjectBase>> FetchDependencies(DependencyContext context)
@@ -621,6 +627,7 @@ namespace AssetRipper.Core.Classes.Renderer
 		public ShadowCastingMode CastShadows { get; set; }
 		public byte ReceiveShadows { get; set; }
 		public byte DynamicOccludee { get; set; }
+		public byte AllowHalfResolution { get; set; }
 		public byte StaticShadowCaster { get; set; }
 		public MotionVectorGenerationMode MotionVectors { get; set; }
 		public bool UseLightProbes => LightProbeUsage != LightProbeUsage.Off;
@@ -638,6 +645,7 @@ namespace AssetRipper.Core.Classes.Renderer
 		public int SortingLayerID { get; set; }
 		public short SortingLayer { get; set; }
 		public short SortingOrder { get; set; }
+		public bool UseHighestMip { get; set; }
 
 		public const string EnabledName = "m_Enabled";
 		public const string CastShadowsName = "m_CastShadows";
