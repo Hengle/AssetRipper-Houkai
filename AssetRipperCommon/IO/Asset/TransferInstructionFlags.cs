@@ -58,5 +58,9 @@ namespace AssetRipper.Core.IO.Asset
 		{
 			return (_this & TransferInstructionFlags.IsBuiltinResourcesFile) != 0;
 		}
+		public static bool IsSwapEndianess(this TransferInstructionFlags _this)
+		{
+			return (_this & TransferInstructionFlags.SwapEndianess) != 0;
+		}
 	}
 }

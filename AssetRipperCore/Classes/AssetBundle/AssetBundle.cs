@@ -82,7 +82,7 @@ namespace AssetRipper.Core.Classes.AssetBundle
 			}
 
 			Container = reader.ReadKVPStringTArray<AssetInfo>();
-			MainAsset.Read(reader);
+			//MainAsset.Read(reader);
 
 			if (HasScriptCampatibility(reader.Version))
 			{
@@ -99,35 +99,39 @@ namespace AssetRipper.Core.Classes.AssetBundle
 				ClassVersionMap.Read(reader);
 			}
 
-			if (HasRuntimeCompatibility(reader.Version))
-			{
-				RuntimeCompatibility = reader.ReadUInt32();
-			}
+			//if (HasRuntimeCompatibility(reader.Version))
+			//{
+			//	RuntimeCompatibility = reader.ReadUInt32();
+			//	if (reader.Flags.IsSwapEndianess())
+			//	{
+			//		RuntimeCompatibility = ((RuntimeCompatibility & 0xFF00 | (RuntimeCompatibility << 16)) << 8) | ((RuntimeCompatibility >> 16 | RuntimeCompatibility & 0xFF0000) >> 8);
+			//	}
+			//}
 
 			if (HasAssetBundleName(reader.Version))
 			{
 				AssetBundleName = reader.ReadString();
 				Dependencies = reader.ReadStringArray();
 			}
-			if (HasIsStreamedSceneAssetBundle(reader.Version))
-			{
-				IsStreamedSceneAssetBundle = reader.ReadBoolean();
-				reader.AlignStream();
-			}
-			if (HasExplicitDataLayout(reader.Version))
-			{
-				ExplicitDataLayout = reader.ReadInt32();
-			}
+			//if (HasIsStreamedSceneAssetBundle(reader.Version))
+			//{
+			//	IsStreamedSceneAssetBundle = reader.ReadBoolean();
+			//	reader.AlignStream();
+			//}
+			//if (HasExplicitDataLayout(reader.Version))
+			//{
+			//	ExplicitDataLayout = reader.ReadInt32();
+			//}
 			if (HasPathFlags(reader.Version))
 			{
 				PathFlags = reader.ReadInt32();
 			}
 
-			if (HasSceneHashes(reader.Version))
-			{
-				SceneHashes = new Dictionary<string, string>();
-				SceneHashes.Read(reader);
-			}
+			//if (HasSceneHashes(reader.Version))
+			//{
+			//	SceneHashes = new Dictionary<string, string>();
+			//	SceneHashes.Read(reader);
+			//}
 		}
 
 		public override IEnumerable<PPtr<IUnityObjectBase>> FetchDependencies(DependencyContext context)
