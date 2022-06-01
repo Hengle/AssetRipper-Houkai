@@ -24,6 +24,7 @@ namespace AssetRipper.Core.Classes.AnimationClip.Clip
 			{
 				ConstantClip.Read(reader);
 			}
+			AclClip.Read(reader);
 			if (HasBinding(reader.Version))
 			{
 				Binding.Read(reader);
@@ -94,9 +95,11 @@ namespace AssetRipper.Core.Classes.AnimationClip.Clip
 			return bindings;
 		}
 
+
 		public StreamedClip StreamedClip = new();
 		public DenseClip DenseClip = new();
 		public ConstantClip ConstantClip = new();
+		public AclClip AclClip = new();
 		public ValueArrayConstant Binding = new();
 	}
 }

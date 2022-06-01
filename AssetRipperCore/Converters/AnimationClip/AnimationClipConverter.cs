@@ -53,6 +53,7 @@ namespace AssetRipper.Core.Converters.AnimationClip
 			{
 				ProcessConstant(clip, bindings, tos, lastFrame);
 			}
+			ProcessAclClip();//todo
 			CreateCurves();
 		}
 
@@ -188,6 +189,10 @@ namespace AssetRipper.Core.Converters.AnimationClip
 					}
 				}
 			}
+		}
+
+		private void ProcessAclClip()
+		{
 		}
 
 		private void AddCustomCurve(AnimationClipBindingConstant bindings, GenericBinding binding, string path, float time, float value)
