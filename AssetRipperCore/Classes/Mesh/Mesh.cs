@@ -131,6 +131,9 @@ namespace AssetRipper.Core.Classes.Mesh
 		public MeshCompression MeshCompression { get; set; }
 		public byte StreamCompression { get; set; }
 		public bool IsReadable { get; set; }
+		public bool IsHighPrecisionPosition { get; set; }
+		public bool IsHighPrecisionTangent { get; set; }
+		public bool IsHighPrecisionUv { get; set; }
 		public bool KeepVertices { get; set; }
 		public bool KeepIndices { get; set; }
 		public IndexFormat IndexFormat { get; set; }
@@ -152,6 +155,7 @@ namespace AssetRipper.Core.Classes.Mesh
 		public int CollisionVertexCount { get; set; }
 		public int MeshUsageFlags { get; set; }
 		public float[] MeshMetrics { get; set; }
+		public bool MetricsDirty { get; set; }
 		public List<uint> Indices { get; set; } = new List<uint>();
 		public List<List<uint>> Triangles { get; set; } = new List<List<uint>>();
 
@@ -291,9 +295,9 @@ namespace AssetRipper.Core.Classes.Mesh
 		/// </summary>
 		public static bool HasCollision(UnityVersion version) => version.IsGreaterEqual(5);
 		/// <summary>
-		/// 2018.2 and greater
+		/// 2017.3 and greater
 		/// </summary>
-		public static bool HasMeshMetrics(UnityVersion version) => version.IsGreaterEqual(2018, 2);
+		public static bool HasMeshMetrics(UnityVersion version) => version.IsGreaterEqual(2017, 3);
 		/// <summary>
 		/// 3.5.0 and greater and Not Release
 		/// </summary>
@@ -430,6 +434,9 @@ namespace AssetRipper.Core.Classes.Mesh
 			if (HasIsReadable(reader.Version))
 			{
 				IsReadable = reader.ReadBoolean();
+				IsHighPrecisionPosition = reader.ReadBoolean();
+				IsHighPrecisionTangent = reader.ReadBoolean();
+				IsHighPrecisionUv = reader.ReadBoolean();
 				KeepVertices = reader.ReadBoolean();
 				KeepIndices = reader.ReadBoolean();
 			}
@@ -535,6 +542,10 @@ namespace AssetRipper.Core.Classes.Mesh
 				MeshMetrics[0] = reader.ReadSingle();
 				MeshMetrics[1] = reader.ReadSingle();
 			}
+			
+			MetricsDirty = reader.ReadBoolean();
+			reader.AlignStream();
+
 			if (HasStreamData(reader.Version))
 			{
 				reader.AlignStream();
