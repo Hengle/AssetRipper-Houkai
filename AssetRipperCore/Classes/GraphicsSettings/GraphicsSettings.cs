@@ -284,6 +284,8 @@ namespace AssetRipper.Core.Classes.GraphicsSettings
 				LensFlare.Read(reader);
 			}
 
+			DepthDownSample.Read(reader);
+			
 			if (HasVideoShadersIncludeMode(reader.Version))
 			{
 				VideoShadersIncludeMode = reader.ReadInt32();
@@ -648,6 +650,7 @@ namespace AssetRipper.Core.Classes.GraphicsSettings
 		public BuiltinShaderSettings MotionVectors = new();
 		public BuiltinShaderSettings LightHalo = new();
 		public BuiltinShaderSettings LensFlare = new();
+		public BuiltinShaderSettings DepthDownSample = new ();
 		public PPtr<Material.Material> SpritesDefaultMaterial = new();
 		public PPtr<MonoBehaviour> CustomRenderPipeline = new();
 		public Vector3f TransparencySortAxis = new();
