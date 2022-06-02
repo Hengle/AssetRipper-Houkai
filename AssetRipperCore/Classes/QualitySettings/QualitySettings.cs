@@ -161,6 +161,12 @@ namespace AssetRipper.Core.Classes.QualitySettings
 						QualitySetting good = CreateGoodSettings();
 						setting.Merge(good, reader.Version, reader.Flags);
 						break;
+						
+					case nameof(QualityLevel.MihoyoGood):
+					case "miHoYo_High":
+						QualitySetting mihoyoGood = CreateMihoyoGoodSettings();
+						setting.Merge(mihoyoGood, reader.Version, reader.Flags);
+						break;
 
 					case nameof(QualityLevel.Beautiful):
 					case "Very High":
@@ -273,6 +279,25 @@ namespace AssetRipper.Core.Classes.QualitySettings
 		{
 			QualitySetting setting = new QualitySetting(true);
 			setting.Name = "High";
+			setting.PixelLightCount = 2;
+			setting.Shadows = ShadowQuality.All;
+			setting.ShadowResolution = ShadowResolution.Medium;
+			setting.ShadowCascades = ShadowCascades.TwoCascades;
+			setting.ShadowDistance = 40;
+			setting.SkinWeights = SkinWeights.TwoBones;
+			setting.AnisotropicTextures = AnisotropicFiltering.Enable;
+			setting.AntiAliasing = AntiAliasing._2X;
+			setting.SoftVegetation = true;
+			setting.VSyncCount = VSyncCount.EveryVBlank;
+			setting.LodBias = 1.0f;
+			setting.ParticleRaycastBudget = 256;
+			return setting;
+		}
+
+		private QualitySetting CreateMihoyoGoodSettings()
+		{
+			QualitySetting setting = new QualitySetting(true);
+			setting.Name = "miHoYo_High";
 			setting.PixelLightCount = 2;
 			setting.Shadows = ShadowQuality.All;
 			setting.ShadowResolution = ShadowResolution.Medium;

@@ -290,6 +290,13 @@ namespace AssetRipper.Core.Classes.QualitySettings
 				MaximumLODLevel = reader.ReadInt32();
 			}
 
+			textureStreamingBudget = reader.ReadSingle();
+			minStreamingMipLevel = reader.ReadInt32();
+			textureStreamingEnabled = reader.ReadBoolean();
+			textureStreamingForceLoadEnabled = reader.ReadBoolean();
+			forceLoadStreamingMipLevel = reader.ReadInt32();
+			reader.AlignStream();
+
 			if (HasStreamingMipmapsActive(reader.Version))
 			{
 				StreamingMipmapsActive = reader.ReadBoolean();
@@ -319,6 +326,29 @@ namespace AssetRipper.Core.Classes.QualitySettings
 			{
 				ResolutionScalingFixedDPIFactor = reader.ReadSingle();
 			}
+
+			meshDynamicCompressionLevel = reader.ReadInt32();
+			reader.AlignStream();
+			useOctagonParticleGlobal = reader.ReadBoolean();
+			reader.AlignStream();
+			particleEmitLevel = reader.ReadInt32();
+			reader.AlignStream();
+			useParticleDistanceLOD = reader.ReadBoolean();
+			reader.AlignStream();
+			particleLODDistance = reader.ReadSingle();
+			reader.AlignStream();
+			useMeshParticleInstancing = reader.ReadBoolean();
+			reader.AlignStream();
+			lightOnLevel = reader.ReadInt32();
+			reader.AlignStream();
+			perObjetShadowQuality = reader.ReadInt32();
+			reader.AlignStream();
+			optimizeUIUpdate = reader.ReadBoolean();
+			reader.AlignStream();
+			avatarOutlineThresh = reader.ReadSingle();
+			avatarShadowThresh = reader.ReadSingle();
+			avatarMotionVectorThresh = reader.ReadSingle();
+
 			if (HasCustomRenderPipeline(reader.Version))
 			{
 				CustomRenderPipeline.Read(reader);
@@ -435,6 +465,11 @@ namespace AssetRipper.Core.Classes.QualitySettings
 		public VSyncCount VSyncCount { get; set; }
 		public float LodBias { get; set; }
 		public int MaximumLODLevel { get; set; }
+		public float textureStreamingBudget { get; set; }
+		public int minStreamingMipLevel { get; set; }
+		public bool textureStreamingEnabled { get; set; }
+		public bool textureStreamingForceLoadEnabled { get; set; }
+		public int forceLoadStreamingMipLevel { get; set; }
 		public bool StreamingMipmapsActive { get; set; }
 		public bool StreamingMipmapsAddAllCameras { get; set; }
 		public float StreamingMipmapsMemoryBudget { get; set; }
@@ -446,6 +481,19 @@ namespace AssetRipper.Core.Classes.QualitySettings
 		public int AsyncUploadBufferSize { get; set; }
 		public bool AsyncUploadPersistentBuffer { get; set; }
 		public float ResolutionScalingFixedDPIFactor { get; set; }
+		public int meshDynamicCompressionLevel { get; set; }
+		public bool useOctagonParticleGlobal { get; set; }
+		public int particleEmitLevel { get; set; }
+		public bool useParticleDistanceLOD { get; set; }
+		public float particleLODDistance { get; set; }
+		public bool useMeshParticleInstancing { get; set; }
+		public int lightOnLevel { get; set; }
+		public int perObjetShadowQuality { get; set; }
+		public bool optimizeUIUpdate { get; set; }
+		public float avatarOutlineThresh { get; set; }
+		public float avatarShadowThresh { get; set; }
+		public float avatarMotionVectorThresh { get; set; }
+
 
 		public const string NameName = "name";
 		public const string PixelLightCountName = "pixelLightCount";

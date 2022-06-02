@@ -9,7 +9,8 @@
 		Fast = 1,
 		Simple = 2,
 		Good = 3,
-		Beautiful = 4,
-		Fantastic = 5,
+		MihoyoGood = 4,
+		Beautiful = 5,
+		Fantastic = 6,
 	}
 }
