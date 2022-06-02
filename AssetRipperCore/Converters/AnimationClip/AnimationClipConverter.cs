@@ -7,6 +7,7 @@ using AssetRipper.Core.Classes.AnimationClip.GenericBinding;
 using AssetRipper.Core.Classes.Misc;
 using AssetRipper.Core.Classes.Misc.KeyframeTpl;
 using AssetRipper.Core.Layout;
+using AssetRipper.Core.Logging;
 using AssetRipper.Core.Math.Vectors;
 using AssetRipper.Core.Utils;
 using System;
@@ -47,13 +48,20 @@ namespace AssetRipper.Core.Converters.AnimationClip
 			float lastSampleFrame = streamedFrames.Count > 1 ? streamedFrames[streamedFrames.Count - 2].Time : 0.0f;
 			float lastFrame = System.Math.Max(lastDenseFrame, lastSampleFrame);
 
-			ProcessStreams(streamedFrames, bindings, tos, clip.DenseClip.SampleRate);
-			ProcessDenses(clip, bindings, tos);
-			if (Clip.HasConstantClip(Layout.Version))
-			{
-				ProcessConstant(clip, bindings, tos, lastFrame);
-			}
-			ProcessAclClip();//todo
+			//AclClip m_ACLClip = clip.AclClip;
+			//if (m_ACLClip.CurveCount != 0)
+			//{
+			//	ProcessAclClip(clip, bindings, tos);
+			//}
+			//else
+			//{
+				ProcessStreams(streamedFrames, bindings, tos, clip.DenseClip.SampleRate);
+				ProcessDenses(clip, bindings, tos);
+				if (Clip.HasConstantClip(Layout.Version))
+				{
+					ProcessConstant(clip, bindings, tos, lastFrame);
+				}
+			//}
 			CreateCurves();
 		}
 
@@ -191,8 +199,38 @@ namespace AssetRipper.Core.Converters.AnimationClip
 			}
 		}
 
-		private void ProcessAclClip()
+		private void ProcessAclClip(Clip clip, AnimationClipBindingConstant bindings, IReadOnlyDictionary<uint, string> tos)
 		{
+			AclClip m_ACLClip = clip.AclClip;
+			AclUtils.DecompressAll(m_ACLClip.ClipData, out var values, out var times);
+			float[] slopeValues = new float[4]; // no slopes - 0 values
+
+			for (int frameIndex = 0; frameIndex < times.Length-1; frameIndex++)
+			{
+				int index = 0;
+				float time = times[frameIndex];
+				int offset = frameIndex * (int)m_ACLClip.CurveCount;
+				for (int curveIndex = offset; curveIndex < offset + m_ACLClip.CurveCount;)
+				{
+					GenericBinding binding = bindings.FindBinding(index++);
+					string path = GetCurvePath(tos, binding.Path);
+					if (binding.IsTransform)
+					{
+						AddTransformCurve(time, binding.TransformType, values, slopeValues, slopeValues, curveIndex, path);
+						curveIndex += binding.TransformType.GetDimension();
+					}
+					else if (binding.CustomType == BindingCustomType.None)
+					{
+						AddDefaultCurve(binding, path, time, values[curveIndex]);
+						curveIndex++;
+					}
+					else
+					{
+						AddCustomCurve(bindings, binding, path, time, values[curveIndex]);
+						curveIndex++;
+					}
+				}
+			}
 		}
 
 		private void AddCustomCurve(AnimationClipBindingConstant bindings, GenericBinding binding, string path, float time, float value)
