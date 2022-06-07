@@ -218,7 +218,7 @@ namespace AssetRipper.Core.Classes.AnimationClip
 			YAMLMappingNode node = base.ExportYAMLRoot(container);
 			node.AddSerializedVersion(ToSerializedVersion(container.ExportVersion));
 			node.Add(LegacyName, GetLegacy(container.Version));
-			node.Add(CompressedName, Compressed);
+			node.Add(CompressedName, MuscleClip.Clip.AclClip.CurveCount == 0 ? Compressed : false);
 			node.Add(UseHighQualityCurveName, UseHightQualityCurve);
 
 			AnimationCurves curves = GetAnimationCurves(container.Version, container.Flags);
