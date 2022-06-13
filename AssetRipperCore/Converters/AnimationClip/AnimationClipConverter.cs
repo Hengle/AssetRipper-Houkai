@@ -213,7 +213,7 @@ namespace AssetRipper.Core.Converters.AnimationClip
 					string path = GetCurvePath(tos, binding.Path);
 					if (binding.IsTransform)
 					{
-						AddTransformCurve(time, binding.TransformType, values, slopeValues, slopeValues, curveIndex, path);
+						AddAclTransformCurve(time, binding.TransformType, values, slopeValues, slopeValues, curveIndex, path);
 						curveIndex += binding.TransformType.GetDimension();
 						index += binding.TransformType.GetDimension();
 					}
@@ -366,6 +366,179 @@ namespace AssetRipper.Core.Converters.AnimationClip
 						float x = curveValues[offset + 0];
 						float y = curveValues[offset + 1];
 						float z = curveValues[offset + 2];
+
+						float inX = inSlopeValues[0];
+						float inY = inSlopeValues[1];
+						float inZ = inSlopeValues[2];
+
+						float outX = outSlopeValues[0];
+						float outY = outSlopeValues[1];
+						float outZ = outSlopeValues[2];
+
+						Vector3f value = new Vector3f(x, y, z);
+						Vector3f inSlope = new Vector3f(inX, inY, inZ);
+						Vector3f outSlope = new Vector3f(outX, outY, outZ);
+						KeyframeTpl<Vector3f> eulerKey = new KeyframeTpl<Vector3f>(time, value, inSlope, outSlope, KeyframeTpl<Vector3f>.DefaultVector3Weight);
+						eulerCurve.Add(eulerKey);
+					}
+					break;
+
+				default:
+					throw new NotImplementedException(transType.ToString());
+			}
+		}
+
+		private void AddAclTransformCurve(float time, TransformType transType, IReadOnlyList<float> curveValues,
+			IReadOnlyList<float> inSlopeValues, IReadOnlyList<float> outSlopeValues, int offset, string path)
+		{
+			switch (transType)
+			{
+				case TransformType.Translation:
+					{
+						Vector3Curve curve = new Vector3Curve(path);
+						if (!m_translations.TryGetValue(curve, out List<KeyframeTpl<Vector3f>> transCurve))
+						{
+							transCurve = new List<KeyframeTpl<Vector3f>>();
+							m_translations.Add(curve, transCurve);
+						}
+
+						float x = curveValues[offset + 0];
+						float y = curveValues[offset + 1];
+						float z = curveValues[offset + 2];
+
+						if (transCurve.Count > 1)
+						{
+							var a = transCurve.Last().Value;
+							var curdiff = x + y + z;
+							var prevdiff = a.X + a.Y + a.Z;
+							if (MathF.Abs(prevdiff - curdiff) < 0.001f)
+							{
+								break;
+							}
+						}
+
+						float inX = inSlopeValues[0];
+						float inY = inSlopeValues[1];
+						float inZ = inSlopeValues[2];
+
+						float outX = outSlopeValues[0];
+						float outY = outSlopeValues[1];
+						float outZ = outSlopeValues[2];
+
+						Vector3f value = new Vector3f(x, y, z);
+						Vector3f inSlope = new Vector3f(inX, inY, inZ);
+						Vector3f outSlope = new Vector3f(outX, outY, outZ);
+						KeyframeTpl<Vector3f> transKey = new KeyframeTpl<Vector3f>(time, value, inSlope, outSlope, KeyframeTpl<Vector3f>.DefaultVector3Weight);
+						transCurve.Add(transKey);
+					}
+					break;
+
+				case TransformType.Rotation:
+					{
+						QuaternionCurve curve = new QuaternionCurve(path);
+						if (!m_rotations.TryGetValue(curve, out List<KeyframeTpl<Quaternionf>> rotCurve))
+						{
+							rotCurve = new List<KeyframeTpl<Quaternionf>>();
+							m_rotations.Add(curve, rotCurve);
+						}
+
+						float x = curveValues[offset + 0];
+						float y = curveValues[offset + 1];
+						float z = curveValues[offset + 2];
+						float w = curveValues[offset + 3];
+
+						if (rotCurve.Count > 1)
+						{
+							var a = rotCurve.Last().Value;
+							var curdiff = x + y + z + w;
+							var prevdiff = a.X + a.Y + a.Z + a.W;
+							if (MathF.Abs(prevdiff - curdiff) < 0.001f)
+							{
+								break;
+							}
+						}
+
+						float inX = inSlopeValues[0];
+						float inY = inSlopeValues[1];
+						float inZ = inSlopeValues[2];
+						float inW = inSlopeValues[3];
+
+						float outX = outSlopeValues[0];
+						float outY = outSlopeValues[1];
+						float outZ = outSlopeValues[2];
+						float outW = outSlopeValues[3];
+
+						Quaternionf value = new Quaternionf(x, y, z, w);
+						Quaternionf inSlope = new Quaternionf(inX, inY, inZ, inW);
+						Quaternionf outSlope = new Quaternionf(outX, outY, outZ, outW);
+						KeyframeTpl<Quaternionf> rotKey = new KeyframeTpl<Quaternionf>(time, value, inSlope, outSlope, KeyframeTpl<Quaternionf>.DefaultQuaternionWeight);
+						rotCurve.Add(rotKey);
+					}
+					break;
+
+				case TransformType.Scaling:
+					{
+						Vector3Curve curve = new Vector3Curve(path);
+						if (!m_scales.TryGetValue(curve, out List<KeyframeTpl<Vector3f>> scaleCurve))
+						{
+							scaleCurve = new List<KeyframeTpl<Vector3f>>();
+							m_scales.Add(curve, scaleCurve);
+						}
+
+						float x = curveValues[offset + 0];
+						float y = curveValues[offset + 1];
+						float z = curveValues[offset + 2];
+
+						if (scaleCurve.Count > 1)
+						{
+							var a = scaleCurve.Last().Value;
+							var curdiff = x + y + z;
+							var prevdiff = a.X + a.Y + a.Z;
+							if (MathF.Abs(prevdiff - curdiff) < 0.001f)
+							{
+								break;
+							}
+						}
+
+						float inX = inSlopeValues[0];
+						float inY = inSlopeValues[1];
+						float inZ = inSlopeValues[2];
+
+						float outX = outSlopeValues[0];
+						float outY = outSlopeValues[1];
+						float outZ = outSlopeValues[2];
+
+						Vector3f value = new Vector3f(x, y, z);
+						Vector3f inSlope = new Vector3f(inX, inY, inZ);
+						Vector3f outSlope = new Vector3f(outX, outY, outZ);
+						KeyframeTpl<Vector3f> scaleKey = new KeyframeTpl<Vector3f>(time, value, inSlope, outSlope, KeyframeTpl<Vector3f>.DefaultVector3Weight);
+						scaleCurve.Add(scaleKey);
+					}
+					break;
+
+				case TransformType.EulerRotation:
+					{
+						Vector3Curve curve = new Vector3Curve(path);
+						if (!m_eulers.TryGetValue(curve, out List<KeyframeTpl<Vector3f>> eulerCurve))
+						{
+							eulerCurve = new List<KeyframeTpl<Vector3f>>();
+							m_eulers.Add(curve, eulerCurve);
+						}
+
+						float x = curveValues[offset + 0];
+						float y = curveValues[offset + 1];
+						float z = curveValues[offset + 2];
+
+						if (eulerCurve.Count > 1)
+						{
+							var a = eulerCurve.Last().Value;
+							var curdiff = x + y + z;
+							var prevdiff = a.X + a.Y + a.Z;
+							if (MathF.Abs(prevdiff - curdiff) < 0.001f)
+							{
+								break;
+							}
+						}
 
 						float inX = inSlopeValues[0];
 						float inY = inSlopeValues[1];
